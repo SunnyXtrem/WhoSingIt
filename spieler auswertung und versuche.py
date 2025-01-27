@@ -1,20 +1,20 @@
-def spielende_und_auswertung(gesuchtes_jahr, spieler_punkte):
+def player_and_result(search_year, player_points):
     # Überprüfe ob spieler jahr erraten hat
-    for spieler, punkte in spieler_punkte.items():
-        if punkte == 0:  # Spieler hat jahr erraten
-            print(f"{spieler} hat das richtige Jahr {gesuchtes_jahr} erraten!")
-            print(f"{spieler} hat das Spiel in {punkte} Versuchen gewonnen!")
+    for player, points in player_points.items():
+        if points == 0:  # Spieler hat jahr erraten
+            print(f"{player} has the correct year {search_year} Guess!")
+            print(f"{player} win the game with {points} points!")
             return  # spiel beenden sobald spieler Jahr errät
 
     # falls keiner Jahr erraten das richtige Jahr anzeigen
-    print(f"Das richtige Jahr war {gesuchtes_jahr}.")
+    print(f"The right Year {search_year}.")
     return  # Spiel beenden nachdem Jahr angezeigt wurde
 
-def versuche_verfolgen_und_auswertung(gesuchtes_jahr, spieler_punkte):
+def tries_analysis(search_year, player_points):
     # wie viele versuche jeder Spieler braucht
-    for spieler, punkte in spieler_punkte.items():
-        print(f"{spieler} hat {punkte} Versuche gebraucht.")
+    for player, points in player_points.items():
+        print(f"{player} has {points} Attempts used.")
 
     # zeige ergebnis und punkte nach jeder runde
-    for spieler, punkte in spieler_punkte.items():
-        print(f"Ergebnis für {spieler}: {punkte} Versuche.")
+    for player, points in player_points.items():
+        print(f"Result for {player}: {points} Attempts.")
