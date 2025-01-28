@@ -1,6 +1,6 @@
 import requests
 import re
-import random  # Für zufällige Auswahl eines Songs
+import random
 
 WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php"
 
@@ -103,17 +103,11 @@ player_notes = [
 ]
 
 
-# Funktion zur Auswahl eines zufälligen Songs aus der Liste
-def waehle_zufaelligen_song(song_liste):
+def choose_random_song(song_liste):
     if not song_liste:
         return None
     return random.choice(song_liste)
 
 
-# Zufälligen Song auswählen
-game_song = waehle_zufaelligen_song(songs)
+game_song = choose_random_song(songs)
 
-# Ausgabe des zufälligen Songs als Dictionary
-if game_song:
-    print("\n--- Zufälliger Song für das Spiel ---\n")
-    print(game_song)  # Gibt das Dictionary direkt aus
