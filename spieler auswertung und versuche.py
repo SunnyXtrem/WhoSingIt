@@ -11,7 +11,7 @@ def player_and_result(search_artist, player_points):
     return  # Spiel beenden nachdem artist angezeigt wurde
 
 def tries_analysis(search_artist, player_points):
-    # wie viele versuche jeder Spieler braucht.
+    # wie viele versuche jeder Spieler braucht
     for player, points in player_points.items():
         print(f"{player} has {points} Attempts used.")
 
