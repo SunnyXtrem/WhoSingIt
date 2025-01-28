@@ -1,30 +1,61 @@
-import wikipedia  # Bibliothek für Wikipedia-Suche und Summary
+import requests
+import re
+import random  # Für zufällige Auswahl eines Songs
 
-# Sprache für Wikipedia-Suche setzen
-wikipedia.set_lang("de")
+WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php"
 
-# Komplette Songliste mit Titel, Interpret und Veröffentlichungsjahr selbst erstellt
-song_liste = [
-    {"title": "Sweet Child o’ Mine", "artist": "Guns N’ Roses", "release_year": "1987"},
-    {"title": "Imagine", "artist": "John Lennon", "release_year": "1971"},
-    {"title": "Bohemian Rhapsody", "artist": "Queen", "release_year": "1975"},
-    {"title": "Hotel California", "artist": "Eagles", "release_year": "1976"},
-    {"title": "Like a Rolling Stone", "artist": "Bob Dylan", "release_year": "1965"},
-    {"title": "Smells Like Teen Spirit", "artist": "Nirvana", "release_year": "1991"},
-    {"title": "Billie Jean", "artist": "Michael Jackson", "release_year": "1982"},
-    {"title": "Hey Jude", "artist": "The Beatles", "release_year": "1968"},
-    {"title": "Uptown Funk", "artist": "Mark Ronson feat. Bruno Mars", "release_year": "2014"},
-    {"title": "Rolling in the Deep", "artist": "Adele", "release_year": "2010"},
-    {"title": "Wonderwall", "artist": "Oasis", "release_year": "1995"},
-    {"title": "Lose Yourself", "artist": "Eminem", "release_year": "2002"},
-    {"title": "I Will Always Love You", "artist": "Whitney Houston", "release_year": "1992"},
-    {"title": "Take On Me", "artist": "a-ha", "release_year": "1985"},
-    {"title": "Shape of You", "artist": "Ed Sheeran", "release_year": "2017"},
-    {"title": "Thriller", "artist": "Michael Jackson", "release_year": "1982"},
-    {"title": "Rolling in the Deep", "artist": "Adele", "release_year": "2010"},
-    {"title": "Stairway to Heaven", "artist": "Led Zeppelin", "release_year": "1971"},
-    {"title": "Hotel California", "artist": "Eagles", "release_year": "1976"}
-]
+# Parameter für den API-Request
+params = {
+    "action": "parse",
+    "page": "List of best-selling singles",
+    "format": "json",
+    "prop": "text"
+}
+
+# API-Request ausführen
+response = requests.get(WIKIPEDIA_API_URL, params=params)
+data = response.json()
+
+# HTML-Content aus der API-Antwort extrahieren
+html_content = data['parse']['text']['*']
+
+# Suche nach der Tabelle mit den Song-Informationen
+table_match = re.search(r'<table class="wikitable.*?</table>', html_content, re.DOTALL)
+
+# Falls keine Tabelle gefunden wurde, beenden
+if not table_match:
+    print("Keine Tabelle gefunden")
+    exit()
+
+# HTML der gefundenen Tabelle speichern
+table_html = table_match.group(0)
+
+# Alle Zeilen der Tabelle extrahieren
+rows = re.findall(r'<tr>(.*?)</tr>', table_html, re.DOTALL)
+
+# Liste für die extrahierten Songs
+songs = []
+
+# Durchlaufe die ersten 15 Zeilen der Tabelle (ohne Header)
+for row in rows[1:16]:  # Überspringt die Kopfzeile
+    cells = re.findall(r'<t[dh].*?>(.*?)</t[dh]>', row, re.DOTALL)
+
+    # Falls die Zeile nicht genug Spalten hat, überspringe sie
+    if len(cells) >= 3:
+        # HTML-Tags entfernen und Werte bereinigen
+        artist = re.sub(r'<.*?>', '', cells[0]).strip()
+        title = re.sub(r'<.*?>', '', cells[1]).strip()
+        release_year = re.sub(r'<.*?>', '', cells[2]).strip()
+
+        # Song-Dictionary erstellen
+        song = {
+            "title": title,
+            "artist": artist,
+            "release_year": release_year
+        }
+
+        # Füge den Song zur Liste hinzu
+        songs.append(song)
 
 player_notes = [
     {"artist": "Bing Crosby",
@@ -71,44 +102,18 @@ player_notes = [
      "hint2": "Sie wurde besonders durch ihre Rolle in einem beliebten Film aus den 1970er-Jahren berühmt, in dem sie an der Seite von berühmten Schauspieler tanzte und sang."},
 ]
 
-# Funktion: Lade Wikipedia-Daten für einen Song
-def lade_songdaten(song):
-    print(f"\n🔍 Lade Wikipedia-Daten für: {song['title']}")
 
-    # Suche nach der Wikipedia-Seite
-    try:
-        # Versuch, die Seite mit "(Lied)" zu finden
-        seite = wikipedia.page(f"{song['title']} (Lied)", auto_suggest=False)
-    except wikipedia.PageError:
-        try:
-            # Falls das nicht klappt, suche nur mit dem Titel
-            seite = wikipedia.page(song["title"], auto_suggest=False)
-        except wikipedia.PageError:
-            song["wikipedia_link"] = "Nicht gefunden"
-            song["hinweis"] = "Kein Hinweis verfügbar."
-            return song
+# Funktion zur Auswahl eines zufälligen Songs aus der Liste
+def waehle_zufaelligen_song(song_liste):
+    if not song_liste:
+        return None
+    return random.choice(song_liste)
 
-    # Füge den Link und den ersten Absatz hinzu
-    song["wikipedia_link"] = seite.url
-    try:
-        # Abruf des ersten Absatzes und der ersten 2 Zeilen
-        song["hinweis"] = wikipedia.summary(seite.title, sentences=2)
-    except wikipedia.exceptions.PageError:
-        song["hinweis"] = "Kein Hinweis verfügbar."
-    except wikipedia.exceptions.DisambiguationError:
-        song["hinweis"] = "Mehrdeutige Ergebnisse gefunden."
 
-    return song
+# Zufälligen Song auswählen
+game_song = waehle_zufaelligen_song(songs)
 
-# Lade Wikipedia-Daten für alle Songs und erstelle eine neue Liste
-erweiterte_song_liste = [lade_songdaten(song) for song in song_liste]
-
-# Ausgabe der neuen Songliste mit Hinweisen
-print("\n--- Songliste mit Hinweisen ---\n")
-for song in erweiterte_song_liste:
-    print(f"Titel: {song['title']}")
-    print(f"Interpret: {song['artist']}")
-    print(f"Veröffentlichung: {song['release_year']}")
-    print(f"Wikipedia-Link: {song['wikipedia_link']}")
-    print(f"Hinweis: {song['hinweis']}")
-    print("-" * 50)
+# Ausgabe des zufälligen Songs als Dictionary
+if game_song:
+    print("\n--- Zufälliger Song für das Spiel ---\n")
+    print(game_song)  # Gibt das Dictionary direkt aus
