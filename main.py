@@ -8,7 +8,7 @@ def find_hints(artist):
     for note in player_notes:
         if note["artist"].lower() == artist.lower():
             return [note["hint1"], note["hint2"]]
-    return ["Kein Hinweis gefunden.", "Kein Hinweis gefunden."]
+    return ["Das Lied wird von mehr als einem Künstler gesungen", "Es gibt keinen zweiten Hinweis"]
 
 
 def check_guess(song, guess):
