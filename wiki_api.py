@@ -4,7 +4,6 @@ import random
 
 WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php"
 
-# Parameter für den API-Request
 params = {
     "action": "parse",
     "page": "List of best-selling singles",
@@ -12,49 +11,35 @@ params = {
     "prop": "text"
 }
 
-# API-Request ausführen
 response = requests.get(WIKIPEDIA_API_URL, params=params)
 data = response.json()
 
-# HTML-Content aus der API-Antwort extrahieren
 html_content = data['parse']['text']['*']
-
-# Suche nach der Tabelle mit den Song-Informationen
 table_match = re.search(r'<table class="wikitable.*?</table>', html_content, re.DOTALL)
 
-# Falls keine Tabelle gefunden wurde, beenden
 if not table_match:
     print("Keine Tabelle gefunden")
     exit()
 
-# HTML der gefundenen Tabelle speichern
 table_html = table_match.group(0)
-
-# Alle Zeilen der Tabelle extrahieren
 rows = re.findall(r'<tr>(.*?)</tr>', table_html, re.DOTALL)
 
-# Liste für die extrahierten Songs
 songs = []
 
-# Durchlaufe die ersten 15 Zeilen der Tabelle (ohne Header)
-for row in rows[1:16]:  # Überspringt die Kopfzeile
+for row in rows[1:16]:
     cells = re.findall(r'<t[dh].*?>(.*?)</t[dh]>', row, re.DOTALL)
 
-    # Falls die Zeile nicht genug Spalten hat, überspringe sie
     if len(cells) >= 3:
-        # HTML-Tags entfernen und Werte bereinigen
         artist = re.sub(r'<.*?>', '', cells[0]).strip()
         title = re.sub(r'<.*?>', '', cells[1]).strip()
         release_year = re.sub(r'<.*?>', '', cells[2]).strip()
 
-        # Song-Dictionary erstellen
         song = {
             "title": title,
             "artist": artist,
             "release_year": release_year
         }
 
-        # Füge den Song zur Liste hinzu
         songs.append(song)
 
 player_notes = [
@@ -102,12 +87,12 @@ player_notes = [
      "hint2": "Sie wurde besonders durch ihre Rolle in einem beliebten Film aus den 1970er-Jahren berühmt, in dem sie an der Seite von berühmten Schauspieler tanzte und sang."},
 ]
 
-
-def choose_random_song(song_liste):
-    if not song_liste:
-        return None
-    return random.choice(song_liste)
-
-
-game_song = choose_random_song(songs)
-
+def get_random_song():
+    song = random.choice(songs)
+    artist = song["artist"]
+    hint_data = next((entry for entry in player_notes if entry["artist"] == artist), None)
+    if hint_data:
+        song["hints"] = [hint_data["hint1"], hint_data["hint2"]]
+    else:
+        song["hints"] = ["Keine Hinweise verfügbar", "Keine Hinweise verfügbar"]
+    return song
