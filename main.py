@@ -1,5 +1,6 @@
 from wiki_api import get_random_song, player_notes
 from player_logic import PlayerLogic
+from colorama import Fore, Style
 
 
 def find_hints(artist):
@@ -19,14 +20,14 @@ def play_round(logic):
     """Spielt eine einzelne Runde."""
     song = get_random_song()
     if not song:
-        print("Es konnten keine Songs geladen werden. Spiel wird beendet.")
+        print(Fore.RED + "Es konnten keine Songs geladen werden. Spiel wird beendet." + Style.RESET_ALL)
         return False  # Runde kann nicht gespielt werden
 
     hints = find_hints(song["artist"])  # Holt die passenden Hinweise aus player_notes
     attempts = 3
     guesses = {player.name: None for player in logic.players}
 
-    print(f"\nErrate den Interpreten des Songs: {song['title']}")
+    print(f"\nErrate den Interpreten des Songs: " + Fore.CYAN + f"{song['title']}" + Style.RESET_ALL)
 
     while attempts > 0:
         # Beide Spieler geben ihre Antwort gleichzeitig ab
@@ -38,16 +39,16 @@ def play_round(logic):
 
         if correct_players:
             for player in correct_players:
-                print(f"{player.name}, richtig! Der Interpret von '{song['title']}' ist {song['artist']}.")
+                print(Fore.GREEN + f"{player.name}, richtig! " + Style.RESET_ALL + f"Der Interpret von '{song['title']}' ist {song['artist']}.")
                 logic.update_score(player)
             return True  # Runde wurde erfolgreich beendet
 
         # Falls niemand richtig lag, Hinweis geben oder Lösung anzeigen
         attempts -= 1
         if attempts > 0:
-            print(f"\nFalsch! Hier ist ein Hinweis: {hints[2 - attempts]}")
+            print(Fore.RED + f"\nFalsch! " + Style.RESET_ALL + f"Hier ist ein Hinweis: {hints[2 - attempts]}")
         else:
-            print(f"\nLeider falsch! Die richtige Antwort war: {song['artist']}.")
+            print(Fore.RED + f"\nLeider falsch!" + Style.RESET_ALL + f"Die richtige Antwort war: {song['artist']}.")
 
     return True  # Runde ist beendet
 
@@ -77,4 +78,7 @@ def play_game():
 
 
 if __name__ == "__main__":
-    play_game()
+    try:
+        play_game()
+    except KeyboardInterrupt:
+        print(Fore.RED + "\nDas Spiel wurde vorzeitig beendet." + Style.RESET_ALL)

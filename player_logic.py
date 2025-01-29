@@ -1,5 +1,7 @@
 import re
 from dataclasses import dataclass
+from colorama import Fore, Style
+
 
 @dataclass
 class Player:
@@ -30,7 +32,7 @@ class PlayerLogic:
     def get_player_guess(self, player, song_title):
         """Fordert eine Antwort vom Spieler an."""
         print(f"\n{player.name}, du bist dran!")
-        print(f"Wer singt den Song: {song_title}?")
+        print(f"Wer singt den Song: " + Fore.CYAN + f"{song_title}?" + Style.RESET_ALL)
         while True:
             guess = input("Deine Antwort: ").strip()
             if guess:
@@ -56,4 +58,4 @@ class PlayerLogic:
         if all(p.score == winner.score for p in self.players):
             print("\nUnentschieden! Beide Spieler haben dieselbe Punktzahl.")
         else:
-            print(f"\nGlückwunsch {winner.name}! Du hast mit {winner.score} Punkten gewonnen!")
+            print(Fore.GREEN + f"\nGlückwunsch {winner.name}!" + Style.RESET_ALL + f" Du hast mit {winner.score} Punkten gewonnen!")
