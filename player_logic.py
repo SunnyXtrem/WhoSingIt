@@ -19,6 +19,10 @@ class PlayerLogic:
         print("Regel Nr. 1: Zahleneingaben werden nicht gezählt.")
         print("Regel Nr. 2: Es zählen nur richtig geschriebene Namen.")
         print("Regel Nr. 3: Gespielt werden kann nur zu zweit.\n")
+        print("Spielinformationen:")
+        print("Alle Lieder stammen aus der Wikipedia-Seite 'List of best-selling singles'.")
+        print("Richtig geratene Lieder werden mit einem Punkt gewertet.")
+        print("Wie lange ihr spielen wollt, könnt ihr nach jeder Runde frei entscheiden.\n")
         return [Player(self._get_valid_player_name(f"Spieler {i+1}")) for i in range(2)]
 
     def _get_valid_player_name(self, prompt):
