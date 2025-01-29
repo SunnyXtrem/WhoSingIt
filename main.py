@@ -16,11 +16,11 @@ def check_guess(song, guess):
     actual_artist = song['artist'].lower()
     guess = guess.lower()
 
-    #Prüft ob die eingabe schon stimmt.
+    #Prüft, ob die eingabe schon stimmt.
     if actual_artist == guess:
         return True
     similarity = fuzz.ratio(actual_artist, guess)
-    return similarity >= 75
+    return similarity >= 85
 
 def play_round(logic):
     """Spielt eine einzelne Runde."""
