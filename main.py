@@ -1,7 +1,7 @@
 from wiki_api import get_random_song, player_notes
 from player_logic import PlayerLogic
 from colorama import Fore, Style
-
+from fuzzywuzzy import fuzz
 
 def find_hints(artist):
     """Sucht die passenden Hinweise für den gegebenen Künstler."""
@@ -12,9 +12,15 @@ def find_hints(artist):
 
 
 def check_guess(song, guess):
-    """Überprüft die Antwort eines Spielers."""
-    return song['artist'].lower() == guess.lower()
+    """Überprüft die Antwort eines Spielers mit Fuzzywuzzy."""
+    actual_artist = song['artist'].lower()
+    guess = guess.lower()
 
+    #Prüft ob die eingabe schon stimmt.
+    if actual_artist == guess:
+        return True
+    similarity = fuzz.ratio(actual_artist, guess)
+    return similarity >= 75
 
 def play_round(logic):
     """Spielt eine einzelne Runde."""
