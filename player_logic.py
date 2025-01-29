@@ -13,6 +13,11 @@ class PlayerLogic:
     def _register_players(self):
         """Registriert zwei Spieler und gibt sie als Liste zurück."""
         print("Willkommen zu 'Who Sings It?!'")
+        print("Hallo und willkommen zu Who Sing It!")
+        print("Hier sind noch ein paar Regeln, bevor der Spielspaß beginnt:")
+        print("Regel Nr. 1: Zahleneingaben werden nicht gezählt.")
+        print("Regel Nr. 2: Es zählen nur richtig geschriebene Namen.")
+        print("Regel Nr. 3: Gespielt werden kann nur zu zweit.\n")
         return [Player(self._get_valid_player_name(f"Spieler {i+1}")) for i in range(2)]
 
     def _get_valid_player_name(self, prompt):
