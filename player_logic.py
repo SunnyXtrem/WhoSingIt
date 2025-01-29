@@ -16,9 +16,8 @@ class PlayerLogic:
         """Registriert zwei Spieler und gibt sie als Liste zurück."""
         print("Willkommen zu 'Who Sings It?!'")
         print("Hier sind noch ein paar Regeln, bevor der Spielspaß beginnt:")
-        print("🌟 Regel Nr. 1: Zahleneingaben werden nicht gezählt.")
-        print("🌟 Regel Nr. 2: Es zählen nur richtig geschriebene Namen.")
-        print("🌟 Regel Nr. 3: Gespielt werden kann nur zu zweit.\n")
+        print("🌟 Regel Nr. 1: Es zählen nur richtig geschriebene Namen.")
+        print("🌟 Regel Nr. 2: Gespielt werden kann nur zu zweit.\n")
         print("‼️ Spielinformationen:")
         print("Alle Lieder stammen aus der Wikipedia-Seite 'List of best-selling singles'.")
         print("Richtig geratene Lieder werden mit einem Punkt gewertet.")
@@ -63,12 +62,3 @@ class PlayerLogic:
             print("\nUnentschieden! Beide Spieler haben dieselbe Punktzahl.")
         else:
             print(Fore.GREEN + f"\nGlückwunsch {winner.name}! 😄" + Style.RESET_ALL + f" Du hast mit {winner.score} Punkten gewonnen!")
-
-    def check_guess(self, song, guess):
-        """Überprüft die Antwort eines Spielers."""
-        if song['artist'].lower() == guess.lower():
-            print("Richtig! 🎉")
-            return True
-        else:
-            print("Leider falsch! 😞")
-            return False

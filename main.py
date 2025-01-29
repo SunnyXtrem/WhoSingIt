@@ -54,7 +54,7 @@ def play_round(logic):
         if attempts > 0:
             print(Fore.RED + f"\nFalsch! " + Style.RESET_ALL + f"Hier ist ein Hinweis: {hints[2 - attempts]}")
         else:
-            print(Fore.RED + f"\nLeider falsch!" + Style.RESET_ALL + f"Die richtige Antwort war: {song['artist']}.")
+            print(Fore.RED + f"\nLeider falsch! " + Style.RESET_ALL + f"Die richtige Antwort war: {song['artist']}.")
 
     return True  # Runde ist beendet
 
